@@ -41,22 +41,18 @@ class basicmodel:
     def AR_GARCH(self,model_lags=[1,1,1]):
         '''
         利用AR-GARCH模型获得白噪声残差\n
-        lags是CNY，CNH，NDF对应模型AR滞后阶数\n
-        lags可以是三个list，也可以是三个maxlag
-        默认为AR(1)+GARCH(1,1)联合估计
+        lags是模型滞后阶数，默认为AR(1)+GARCH(1,1)联合估计
         '''
         self.std_index = pd.DataFrame()
-        i = 0
         for se in ['CNY','CNH','NDF']:
             argarch_model = arch.arch_model(self.ret_data[se],
                                             mean='AR',
-                                            lags=model_lags[i],
+                                            lags=model_lags[0],
                                             vol='GARCH',
-                                            p=1,
-                                            o=0,q=1)
+                                            p=model_lags[1],
+                                            o=0,q=model_lags[2])
             res = argarch_model.fit()
             self.std_index = pd.concat([self.std_index,res.std_resid],axis=1)
-            i = i+1
         self.std_index.columns = ['CNY','CNH','NDF']
         self.std_index = self.std_index.dropna()
 

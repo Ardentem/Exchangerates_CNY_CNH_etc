@@ -48,6 +48,8 @@ class basicmodel:
         self.std_index = pd.DataFrame()
         i = 0
         for se in ['CNY','CNH','NDF']:
+            if model_lags[i] == 0:
+                method = 'Constant'
             argarch_model = arch.arch_model(self.ret_data[se],
                                             mean='AR',
                                             lags=model_lags[i],
